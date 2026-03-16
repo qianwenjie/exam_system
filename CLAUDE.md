@@ -11,97 +11,72 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 当前状态
 - **阶段**: 原型开发中
-- **版本**: v0.7.0
-- **进度**: 题库模块 98% 完成，AI助手模块 100% 完成，学生手机端原型 100% 完成，学生PC端原型 100% 完成
-- **核心文档**: `考试系统功能清单.md`、`prototypes/IMPLEMENTATION_STATUS.md`
+- **版本**: v0.8.0
+- **进度**: 管理端 85% 完成，教师端 100% 完成，学生手机端 100% 完成，学生PC端 100% 完成
+- **核心文档**: `考试系统功能清单.md`（v2.0，按端整理）
 
 ## 项目结构
 
 ```
 考试系统设计/
-├── 考试系统功能清单.md         # 主功能清单文档（完整需求）
+├── 考试系统功能清单.md         # 主功能清单（v2.0，按端整理）
 ├── progress.md                  # 进度跟踪文档
 ├── CLAUDE.md                    # 项目上下文（本文件）
-├── docs/                        # 文档目录
-│   ├── phase2-completion-report.md  # Phase 2 完成报告
-│   └── user-preference-system-guide.md  # 用户偏好系统指南
-├── prototypes/                  # 原型文件目录
-│   ├── IMPLEMENTATION_STATUS.md # 实施状态文档（详细功能完成情况）
+├── docs/
+│   ├── design/                  # 设计文档
+│   └── reports/                 # 完成报告
+│       ├── phase1-completion-report.md
+│       └── phase2-completion-report.md
+├── prototypes/
+│   ├── IMPLEMENTATION_STATUS.md # 实施状态文档
 │   ├── design-guide.md          # 设计规范
 │   ├── components.md            # 组件文档
-│   ├── assets/                  # 静态资源
-│   │   └── images/              # 图片资源
-│   └── admin/                   # 管理端原型
-│       ├── dashboard.html       # 首页 ✅
-│       ├── ai-assistant.html    # AI助手 ✅
-│       └── question-bank/       # 题库模块
-│           ├── list.html        # 题目列表 ✅
-│           ├── add.html         # 添加/编辑题目 ✅
-│           ├── add-simple.html  # 简便录入 ✅
-│           ├── detail.html      # 题目详情 ✅
-│           ├── categories.html  # 知识点管理 ✅
-│           ├── statistics.html  # 题库统计 ✅
-│           ├── duplicate-check.html # 题目查重 ✅
-│           ├── export.html      # 题目导出 ✅
-│           ├── ai-generate.html # AI出题 ✅
-│           └── import.html      # 题目导入 🚧
+│   ├── admin/                   # 管理端（HTML + Tailwind）
+│   │   ├── dashboard.html       # 首页
+│   │   ├── cockpit.html         # 领导驾驶舱
+│   │   ├── ai-assistant.html    # AI助手
+│   │   ├── question-bank/       # 题库模块
+│   │   ├── paper/               # 试卷模块
+│   │   ├── exam/                # 考试模块
+│   │   └── practice/            # 刷题模块（管理端）
+│   ├── teacher/                 # 教师端（HTML + Tailwind）
+│   │   ├── login.html
+│   │   ├── dashboard.html
+│   │   ├── grading.html         # 阅卷（在线）
+│   │   ├── grading-doc.html     # 阅卷（文档）
+│   │   └── grade.html           # 成绩查看
+│   ├── student-mobile/          # 学生手机端（Vue 3 + Vant）
+│   └── student-pc/              # 学生PC端（Vue 3 + Element Plus）
 └── 参考资料/                    # 原始需求和参考文档
-    ├── 功能清单.xlsx             # Excel 格式功能清单
-    ├── 简便录入规则.docx         # 简便录入格式规范
-    └── *.png                     # UI 参考截图
 ```
 
 ## 核心模块与完成状态
 
-### 题库模块 ✅ 95%
+### 管理端
 
-#### 已完成功能
-- ✅ **知识点目录管理**: 树形结构、增删改查、搜索
-- ✅ **题目列表**: 筛选（题型/难度/知识点）、搜索、分页
-- ✅ **题目录入（标准）**: 支持7种题型（单选、多选、判断、填空、简答、完形填空、复合题）
-- ✅ **题目录入（简便）**: 文本解析录入、批量导入
-- ✅ **题目编辑**: 复用录入页面，支持所有字段修改
-- ✅ **题目删除**: 带确认提示，引用检查
-- ✅ **题目预览**: 详情页完整展示
-- ✅ **题型设置**: 内置题型重命名、自定义题型创建
-- ✅ **题库统计**: 题型分布、难度分布（基础版）
-- ✅ **题目查重**: 相似度检测、批量处理
-- ✅ **题目导出**: 按知识点导出、答案配置
-- ✅ **AI出题**: AI生成题目（模拟）
+| 模块 | 状态 | 说明 |
+|------|------|------|
+| 首页 Dashboard | ✅ | 数据概览、AI对话框、主题切换 |
+| 领导驾驶舱 | ✅ | 数据大屏、动态动画 |
+| AI 助手 | ✅ | 自然语言、智能推荐、偏好管理 |
+| 题库模块 | ✅ 95% | 列表/录入/编辑/查重/导出/AI出题；导入🚧 |
+| 试卷模块 | ✅ | 列表/新建/手动组卷/文档模式/随机抽题/预览 |
+| 考试模块 | ✅ | 列表/创建/监控/考生管理/阅卷/成绩 |
+| 刷题模块 | ✅ | 任务列表/新建/统计/学生管理 |
 
-#### 进行中功能
-- 🚧 **题目导入**: 页面框架已完成（20%）
+### 教师端
 
-#### 待开发功能
-- ⏳ **批量操作**: 批量删除、修改（P1）
+| 模块 | 状态 | 说明 |
+|------|------|------|
+| 登录 | ✅ | |
+| 首页 | ✅ | 待阅卷任务、数据概览 |
+| 阅卷（在线） | ✅ | 主观题评分 |
+| 阅卷（文档） | ✅ | 文档模式评分 |
+| 成绩查看 | ✅ | |
 
-### 试卷模块 🟡 10%
-- 仅列表页框架，核心功能未开发
+### 学生手机端 / 学生PC端
 
-### 考试模块 🟡 10%
-- 仅列表页框架，核心功能未开发
-
-### 刷题模块 🟡 10%
-- 仅列表页框架，核心功能未开发
-
-### AI助手模块 ✅ 100%
-
-#### 已完成功能
-- ✅ **自然语言理解**: 解析用户输入，识别意图和参数
-- ✅ **智能对话**: 多轮对话，上下文理解
-- ✅ **题目生成**: 基于参数生成题目（模拟）
-- ✅ **用户偏好管理**: 记录和分析用户行为
-- ✅ **智能推荐**: 基于历史数据的个性化推荐
-- ✅ **行为分析**: 时间模式、知识点关注、常用组合分析
-- ✅ **数据迁移**: 版本检查、数据验证、自动迁移
-
-#### 核心特性
-- **自然语言处理**: 支持多种表达方式
-- **参数识别**: 题型、难度、数量、知识点
-- **智能补全**: 自动补全缺失参数
-- **个性化推荐**: 基于用户历史行为
-- **数据持久化**: LocalStorage 存储
-- **版本管理**: 自动数据迁移
+两端功能基本对齐，详见 `考试系统功能清单.md`。
 
 ## 题型支持
 
@@ -118,20 +93,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 技术栈
 
-### 前端
-- **HTML5**: 页面结构
-- **Tailwind CSS 3.x**: 样式框架
-- **Font Awesome 6.5.1**: 图标库
-- **Vanilla JavaScript**: 交互逻辑
-- **ECharts 5.x**: 图表库（统计页面）
+### 管理端 / 教师端
+- **HTML5 + Tailwind CSS 3.x + Vanilla JS**
+- **ECharts 5.x**（统计图表）
+- **Font Awesome 6.5.1**（图标）
+
+### 学生手机端
+- **Vue 3 + Vite + Pinia + Vue Router**
+- **Vant 4.9**（移动端 UI）
+
+### 学生PC端
+- **Vue 3 + Vite + Pinia + Vue Router**
+- **Element Plus**（PC端 UI）
 
 ### 数据存储（原型阶段）
-- **LocalStorage**: 题目数据、题型配置、知识点结构
-- **Mock Data**: JavaScript 对象模拟后端数据
+- **LocalStorage** + **Mock Data**
 
 ### 设计规范
 - **主色调**: #00B96B（绿色）
-- **题型颜色**: info(青)、purple(紫)、indigo(靛)、warning(橙)、amber(琥珀)
 - **响应式**: 移动端 < 768px，平板 768-1024px，桌面 > 1024px
 
 ## 优先级标记
@@ -162,139 +141,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 2. `progress.md` - 进度记录
 3. Git 提交信息
 
-## 数据结构示例
-
-### 题目数据结构
-```javascript
-{
-  id: 'Q001',
-  type: 'single',              // 题型
-  typeName: '单选题',
-  content: '题干内容...',       // 题干
-  options: [                   // 选项（选择题）
-    {label: 'A', text: '选项A'},
-    {label: 'B', text: '选项B'}
-  ],
-  correctAnswers: ['A'],       // 正确答案
-  explanation: '解析内容...',   // 解析
-  difficulty: 2,               // 难度（1-5）
-  difficultyName: '二级',
-  score: '2',                  // 分值
-  knowledgeIds: ['kp001'],     // 知识点ID列表
-  knowledgePath: '计算机基础 / 数据结构',
-  tags: ['链表', '数组'],      // 标签
-  createTime: '2026-01-20 10:00',
-  author: '张老师',
-  useCount: 5                  // 使用次数
-}
-```
-
-### 知识点数据结构
-```javascript
-{
-  id: 'kp001',
-  name: '计算机基础',
-  parentId: null,              // 父节点ID
-  level: 1,                    // 层级
-  children: [...],             // 子节点
-  questionCount: 156           // 题目数量
-}
-```
-
-### 题型配置数据结构
-```javascript
-{
-  modifiedDefaultTypes: {      // 内置题型修改记录
-    'single': {
-      customName: '单项选择',
-      description: '描述...'
-    }
-  },
-  customQuestionTypes: [       // 自定义题型
-    {
-      id: 'custom_001',
-      name: '情境选择题',
-      baseType: 'single',
-      description: '...',
-      icon: 'fa-lightbulb',
-      color: 'amber'
-    }
-  ]
-}
-```
-
-### 用户偏好数据结构
-```javascript
-{
-  userId: 'default_user',
-  version: '1.0',
-
-  // 基础偏好统计
-  basicPreferences: {
-    questionType: {
-      'single': { count: 45, percentage: 0.45 },
-      'multiple': { count: 20, percentage: 0.20 },
-      // ... 其他题型
-    },
-    difficulty: {
-      '1': { count: 5, percentage: 0.05 },
-      '2': { count: 15, percentage: 0.15 },
-      '3': { count: 50, percentage: 0.50 },
-      // ... 其他难度
-    },
-    quantity: {
-      total: 1000,
-      average: 10,
-      mostCommon: 10,
-      distribution: { '5': 10, '10': 70, '15': 15, '20': 5 }
-    },
-    knowledgePoints: {
-      '数据结构': { count: 40, percentage: 0.40 },
-      // ... 其他知识点
-    }
-  },
-
-  // 场景偏好
-  scenarioPreferences: {
-    'generate_questions': {
-      lastUsed: '2026-02-03T10:30:00',
-      frequency: 100,
-      lastParams: { type: 'single', count: 10, difficulty: 3 },
-      commonConfig: { type: 'single', difficulty: 3, count: 10 }
-    }
-  },
-
-  // 行为模式
-  behaviorPatterns: {
-    timePatterns: {
-      weekday: { samples: 80, avgDifficulty: 3.2, avgCount: 10, commonType: 'single' },
-      weekend: { samples: 20, avgDifficulty: 2.8, avgCount: 15, commonType: 'multiple' }
-    },
-    knowledgePointFocus: {
-      recent: ['数据结构', '算法', '数据库'],
-      trending: '数据结构'
-    },
-    commonCombinations: [
-      { type: 'single', difficulty: 3, knowledgePoint: '数据结构', frequency: 30 }
-    ]
-  },
-
-  // 对话风格偏好
-  conversationStyle: {
-    verbosity: 'normal',
-    confirmationNeeded: true,
-    preferQuickActions: false
-  },
-
-  // 元数据
-  metadata: {
-    totalActions: 100,
-    firstActionDate: '2026-01-01T00:00:00',
-    lastActionDate: '2026-02-03T10:30:00',
-    totalQuestionsGenerated: 1000
-  }
-}
-```
 
 ## 注意事项
 
@@ -336,39 +182,32 @@ wc -l prototypes/admin/question-bank/*.html
 
 ## 相关文档
 
-- **[功能清单](./考试系统功能清单.md)** - 完整的功能需求文档
-- **[实施状态](./prototypes/IMPLEMENTATION_STATUS.md)** - 详细的功能完成状态
+- **[功能清单](./考试系统功能清单.md)** - 完整功能清单（v2.0，按端整理）
+- **[实施状态](./prototypes/IMPLEMENTATION_STATUS.md)** - 详细功能完成状态
 - **[进度跟踪](./progress.md)** - 开发进度和操作日志
 - **[设计规范](./prototypes/design-guide.md)** - UI/UX 设计指南
-- **[组件文档](./prototypes/components.md)** - 组件使用说明
-- **[Phase 2 完成报告](./docs/phase2-completion-report.md)** - AI助手智能化升级 Phase 2 完成报告
-- **[用户偏好系统指南](./docs/user-preference-system-guide.md)** - 用户偏好管理系统使用指南
+- **[Phase 1 完成报告](./docs/reports/phase1-completion-report.md)**
+- **[Phase 2 完成报告](./docs/reports/phase2-completion-report.md)**
+- **[用户偏好系统指南](./docs/design/user-preference-system-guide.md)**
 
 ## 快速定位
 
-### 题目列表相关
-- 主页面: `prototypes/admin/question-bank/list.html`
-- 题型设置: list.html 中的 Modal（行 ~500-700）
-- 筛选功能: list.html 中的 Filter（行 ~200-400）
-- 分页控件: list.html 底部（行 ~370-400）
+### 管理端
+- 题目列表: `prototypes/admin/question-bank/list.html`
+- 题目录入: `prototypes/admin/question-bank/add.html`
+- 知识点管理: `prototypes/admin/question-bank/categories.html`
+- AI助手: `prototypes/admin/ai-assistant.html`（NLPProcessor / UserPreferenceManager / ConversationManager）
+- 试卷管理: `prototypes/admin/paper/`
+- 考试管理: `prototypes/admin/exam/`
 
-### 题目录入相关
-- 录入页面: `prototypes/admin/question-bank/add.html`
-- 题型列表: add.html 左侧 aside（行 ~216-247）
-- 表单区域: add.html 主内容区（行 ~268+）
-- 复合题处理: add.html 中的 compositeQuestionContainer
+### 学生PC端
+- 路由配置: `prototypes/student-pc/src/router/index.js`
+- 主布局: `prototypes/student-pc/src/layouts/MainLayout.vue`
+- 统计布局: `prototypes/student-pc/src/layouts/StatsLayout.vue`
 
-### 知识点管理
-- 管理页面: `prototypes/admin/question-bank/categories.html`
-- 树形结构渲染: categories.html 中的 renderKnowledgeTree 函数
-
-### AI助手相关
-- 主页面: `prototypes/admin/ai-assistant.html`
-- 自然语言处理: NLPProcessor 类（行 ~400-800）
-- 用户偏好管理: UserPreferenceManager 类（行 ~800-1500）
-- 对话管理: ConversationManager 类（行 ~1500-2000）
-- 偏好数据结构: getDefaultPreferences 方法（行 ~810-880）
-- 智能推荐: getSmartRecommendations 方法（行 ~1200-1400）
+### 学生手机端
+- 路由配置: `prototypes/student-mobile/src/router/index.js`
+- 主布局: `prototypes/student-mobile/src/layouts/`
 
 ## 最近更新
 
