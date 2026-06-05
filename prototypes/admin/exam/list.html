@@ -1108,7 +1108,13 @@
         'random-extraction': '随机抽题'
       };
 
-      const paperMode = modeMap[exam.paperInfo.mode] || exam.paperInfo.mode;
+      let paperMode = modeMap[exam.paperInfo.mode] || exam.paperInfo.mode;
+
+      // 固定抽题时追加展示方式
+      if (exam.paperInfo.mode === 'extraction') {
+        const displayMode = exam.paperDisplayMode || 'fixed';
+        paperMode += displayMode === 'shuffle' ? ' - 顺序随机' : ' - 顺序固定';
+      }
 
       // 处理多个试卷的情况
       let paperDisplayName = '';

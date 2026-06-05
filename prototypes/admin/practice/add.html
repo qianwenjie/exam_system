@@ -202,80 +202,160 @@
               </div>
             </div>
 
-            <!-- 选择题目范围 -->
+            <!-- 组题方式 -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="text-error-500">*</span> 选择题目范围
-              </label>
-              <div class="flex items-start space-x-3 mb-4">
-                <div id="selectedKnowledgeList" class="flex-1 min-h-[42px] px-3 py-2.5 border border-gray-300 rounded-lg bg-gray-50">
-                  <div class="text-sm text-gray-400">请选择知识点</div>
-                </div>
-                <button type="button" onclick="openKnowledgeSelector()"
-                  class="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
-                  <i class="fas fa-folder-open mr-2"></i>选择知识点
-                </button>
-                <button type="button" id="clearSelectedBtn" onclick="clearSelectedKnowledge()" style="display: none;"
-                  class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
-                  <i class="fas fa-times mr-2"></i>取消全选
-                </button>
-              </div>
-
-              <!-- 题型配置 -->
-              <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="text-sm font-semibold text-gray-900">题型配置</h3>
-                  <div class="flex items-center space-x-2">
-                    <button type="button" id="selectAllTypesBtn" onclick="selectAllQuestionTypes()"
-                      class="px-3 py-1.5 border border-primary-500 text-primary-600 hover:bg-primary-50 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled>
-                      <i class="fas fa-check-double mr-1"></i>全选
-                    </button>
-                    <button type="button" id="clearAllTypesBtn" onclick="clearAllQuestionTypes()"
-                      class="px-3 py-1.5 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      disabled>
-                      <i class="fas fa-times mr-1"></i>清空
-                    </button>
-                  </div>
-                </div>
-                <div id="questionTypesList" class="space-y-2">
-                  <div class="text-sm text-gray-400 py-6 text-center">请先选择知识点，系统将自动加载可用题型</div>
-                </div>
-                <div id="totalQuestionsInfo" class="hidden mt-3 pt-3 border-t border-gray-300">
-                  <div class="text-sm text-gray-700">
-                    已选择 <span id="selectedQuestionsCount" class="font-semibold text-primary-600">0</span> 道题目
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 抽题方式 -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                <span class="text-error-500">*</span> 抽题方式
+                <span class="text-error-500">*</span> 组题方式
               </label>
               <div class="grid grid-cols-2 gap-3">
-                <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
-                  <input type="radio" name="questionMode" value="fixed" checked
-                    class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
-                  <div class="ml-3 flex-1">
-                    <div class="text-sm font-medium text-gray-900">固定抽题</div>
-                    <div class="mt-1 text-xs text-gray-500">重复进行刷题任务时，每次题目都相同</div>
-                  </div>
-                </label>
-                <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
-                  <input type="radio" name="questionMode" value="random"
+                <label id="modeCard_knowledge" class="flex items-start p-4 border-2 border-primary-500 bg-primary-50 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                  <input type="radio" name="assembleMode" value="knowledge" checked onchange="switchAssembleMode('knowledge')"
                     class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
                   <div class="ml-3 flex-1">
                     <div class="text-sm font-medium text-gray-900">随机抽题</div>
-                    <div class="mt-1 text-xs text-gray-500">重复进行刷题任务时，每次题目都从题库范围内随机生成</div>
+                    <div class="mt-1 text-xs text-gray-500">选择知识点范围，按题型配置数量抽取题目</div>
+                  </div>
+                </label>
+                <label id="modeCard_manual" class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                  <input type="radio" name="assembleMode" value="manual" onchange="switchAssembleMode('manual')"
+                    class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                  <div class="ml-3 flex-1">
+                    <div class="text-sm font-medium text-gray-900">固定题目</div>
+                    <div class="mt-1 text-xs text-gray-500">从题库中手动选择具体题目，学生在指定题目中刷题</div>
                   </div>
                 </label>
               </div>
             </div>
 
+            <!-- ========== 模式A：按知识点抽题 ========== -->
+            <div id="knowledgeModeSection">
+              <!-- 选择题目范围 -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <span class="text-error-500">*</span> 选择题目范围
+                </label>
+                <div class="flex items-start space-x-3 mb-4">
+                  <div id="selectedKnowledgeList" class="flex-1 min-h-[42px] px-3 py-2.5 border border-gray-300 rounded-lg bg-gray-50">
+                    <div class="text-sm text-gray-400">请选择知识点</div>
+                  </div>
+                  <button type="button" onclick="openKnowledgeSelector()"
+                    class="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                    <i class="fas fa-folder-open mr-2"></i>选择知识点
+                  </button>
+                  <button type="button" id="clearSelectedBtn" onclick="clearSelectedKnowledge()" style="display: none;"
+                    class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors whitespace-nowrap">
+                    <i class="fas fa-times mr-2"></i>取消全选
+                  </button>
+                </div>
+
+                <!-- 题型配置 -->
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-900">题型配置</h3>
+                    <div class="flex items-center space-x-2">
+                      <button type="button" id="selectAllTypesBtn" onclick="selectAllQuestionTypes()"
+                        class="px-3 py-1.5 border border-primary-500 text-primary-600 hover:bg-primary-50 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fas fa-check-double mr-1"></i>全选
+                      </button>
+                      <button type="button" id="clearAllTypesBtn" onclick="clearAllQuestionTypes()"
+                        class="px-3 py-1.5 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fas fa-times mr-1"></i>清空
+                      </button>
+                    </div>
+                  </div>
+                  <div id="questionTypesList" class="space-y-2">
+                    <div class="text-sm text-gray-400 py-6 text-center">请先选择知识点，系统将自动加载可用题型</div>
+                  </div>
+                  <div id="totalQuestionsInfo" class="hidden mt-3 pt-3 border-t border-gray-300">
+                    <div class="text-sm text-gray-700">
+                      已选择 <span id="selectedQuestionsCount" class="font-semibold text-primary-600">0</span> 道题目
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 抽题方式 -->
+              <div class="mt-5">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <span class="text-error-500">*</span> 展示方式
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    <input type="radio" name="questionMode" value="fixed" checked
+                      class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                    <div class="ml-3 flex-1">
+                      <div class="text-sm font-medium text-gray-900">固定试卷</div>
+                      <div class="mt-1 text-xs text-gray-500">每次刷题题目相同</div>
+                    </div>
+                  </label>
+                  <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    <input type="radio" name="questionMode" value="random"
+                      class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                    <div class="ml-3 flex-1">
+                      <div class="text-sm font-medium text-gray-900">动态随机</div>
+                      <div class="mt-1 text-xs text-gray-500">每次从范围内随机生成</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- ========== 模式B：指定题目 ========== -->
+            <div id="manualModeSection" class="hidden">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <span class="text-error-500">*</span> 选择题目
+                </label>
+                <!-- 操作栏 -->
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center space-x-3">
+                    <button type="button" onclick="openQuestionPicker()"
+                      class="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors">
+                      <i class="fas fa-plus mr-2"></i>从题库选择
+                    </button>
+                    <span id="manualSelectedCount" class="text-sm text-gray-500">已选 0 道题目</span>
+                  </div>
+                </div>
+                <!-- 已选题目区域 -->
+                <div id="manualQuestionList">
+                  <div class="text-sm text-gray-400 py-8 text-center border border-dashed border-gray-300 rounded-lg">
+                    <i class="fas fa-hand-pointer text-2xl text-gray-300 mb-2 block"></i>
+                    点击"从题库选择"按钮添加题目
+                  </div>
+                </div>
+
+                <!-- 展示方式 -->
+                <div class="mt-5" id="manualDisplayMode">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    <span class="text-error-500">*</span> 展示方式
+                  </label>
+                  <div class="grid grid-cols-2 gap-3">
+                    <label class="flex items-start p-4 border-2 border-primary-500 bg-primary-50 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all" id="displayCard_order">
+                      <input type="radio" name="displayMode" value="order" checked onchange="switchDisplayMode('order')"
+                        class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                      <div class="ml-3 flex-1">
+                        <div class="text-sm font-medium text-gray-900">按选择顺序</div>
+                        <div class="mt-1 text-xs text-gray-500">学生看到的题目顺序与选择时一致</div>
+                      </div>
+                    </label>
+                    <label class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all" id="displayCard_random">
+                      <input type="radio" name="displayMode" value="random" onchange="switchDisplayMode('random')"
+                        class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                      <div class="ml-3 flex-1">
+                        <div class="text-sm font-medium text-gray-900">随机打乱</div>
+                        <div class="mt-1 text-xs text-gray-500">题目顺序和选项顺序都随机打乱</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+
             <!-- 备注说明 -->
-            <div>
+            <div class="mt-6">
               <label class="block text-sm font-medium text-gray-700 mb-2">备注说明</label>
               <div class="border border-gray-300 rounded-lg overflow-hidden">
                 <!-- 富文本工具栏 -->
@@ -378,6 +458,104 @@
     </div>
   </div>
 
+  <!-- 题目选择器模态框（指定题目模式） -->
+  <div id="questionPickerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col">
+      <!-- 头部 -->
+      <div class="flex items-center justify-between p-5 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">从题库选择题目</h3>
+        <button onclick="closeQuestionPicker()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <!-- 筛选栏 -->
+      <div class="p-4 border-b border-gray-200 bg-gray-50">
+        <div class="flex items-center space-x-3 flex-wrap gap-y-2">
+          <input type="text" id="pickerSearchKeyword" placeholder="搜索题目内容..."
+            oninput="filterPickerQuestions()"
+            class="w-64 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <select id="pickerTypeFilter" onchange="filterPickerQuestions()"
+            class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">全部题型</option>
+            <option value="单选题">单选题</option>
+            <option value="多选题">多选题</option>
+            <option value="判断题">判断题</option>
+            <option value="填空题">填空题</option>
+            <option value="简答题">简答题</option>
+          </select>
+          <select id="pickerKnowledgeFilter" onchange="filterPickerQuestions()"
+            class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">全部知识点</option>
+          </select>
+          <select id="pickerDifficultyFilter" onchange="filterPickerQuestions()"
+            class="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option value="">全部难度</option>
+            <option value="easy">简单</option>
+            <option value="medium">中等</option>
+            <option value="hard">困难</option>
+          </select>
+          <button type="button" onclick="resetPickerFilters()"
+            class="px-3 py-2 border border-gray-300 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors">
+            <i class="fas fa-redo mr-1"></i>重置
+          </button>
+        </div>
+      </div>
+      <!-- 题目列表 -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 sticky top-0">
+            <tr class="text-left text-gray-600">
+              <th class="px-4 py-3 w-10">
+                <input type="checkbox" id="pickerSelectAll" onchange="togglePickerSelectAll()"
+                  class="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+              </th>
+              <th class="px-4 py-3 w-20">题型</th>
+              <th class="px-4 py-3">题目内容</th>
+              <th class="px-4 py-3 w-28">知识点</th>
+              <th class="px-4 py-3 w-20">难度</th>
+            </tr>
+          </thead>
+          <tbody id="pickerQuestionTableBody" class="divide-y divide-gray-100">
+            <tr><td colspan="5" class="px-4 py-12 text-center text-gray-400">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 分页控件（固定底部） -->
+      <div id="pickerPagination" class="flex items-center justify-between px-4 py-2.5 border-t border-gray-200 bg-gray-50 shrink-0">
+        <div class="flex items-center space-x-2">
+          <span class="text-sm text-gray-500">共 <span id="pickerTotalCount">0</span> 条</span>
+          <span class="text-gray-300">|</span>
+          <button type="button" onclick="pickerSelectAllPages()"
+            class="px-2.5 py-1 text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 border border-primary-200 rounded transition-colors">
+            选择全部
+          </button>
+          <button type="button" onclick="pickerDeselectAllPages()"
+            class="px-2.5 py-1 text-xs font-medium text-gray-600 bg-white hover:bg-gray-100 border border-gray-300 rounded transition-colors">
+            取消全部
+          </button>
+        </div>
+        <div class="flex items-center space-x-1" id="pickerPageNumbers"></div>
+      </div>
+      <!-- 底部 -->
+      <div class="flex items-center justify-between p-4 border-t border-gray-200 bg-white">
+        <div class="text-sm text-gray-600">
+          已勾选 <span id="pickerCheckedCount" class="font-semibold text-primary-600">0</span> 道题目
+          <span class="text-gray-400 ml-2">（已有 <span id="pickerExistingCount">0</span> 道在列表中）</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button type="button" onclick="closeQuestionPicker()"
+            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+            取消
+          </button>
+          <button type="button" onclick="confirmQuestionPicker()"
+            class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 font-medium">
+            <i class="fas fa-check mr-1"></i>确认添加
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ==================== Message 消息提示 ====================
     function showMessage(text, type = 'info') {
@@ -419,6 +597,513 @@
     let selectedQuestions = {};  // 格式: { '题型名': { count: 数量, maxCount: 最大数量, questions: [题目数组] } }
     let editMode = false;  // 是否为编辑模式
     let editingPracticeId = null;  // 正在编辑的任务ID
+    let currentAssembleMode = 'knowledge';  // 当前组题方式：knowledge / manual
+    let manualSelectedQuestions = [];  // 指定题目模式下选中的题目列表
+    let pickerCheckedIds = new Set();  // 题目选择器中勾选的题目ID
+    let pickerCurrentPage = 1;  // 选择器当前页码
+    let pickerPageSize = 20;  // 每页条数
+    let pickerFilteredQuestions = [];  // 当前筛选结果（全量）
+    let manualListPage = 1;  // 已选题目列表当前页
+    let manualListPageSize = 10;  // 已选题目列表每页条数
+
+    // ==================== 组题方式切换 ====================
+    function switchAssembleMode(mode) {
+      currentAssembleMode = mode;
+      const knowledgeSection = document.getElementById('knowledgeModeSection');
+      const manualSection = document.getElementById('manualModeSection');
+      const modeCardKnowledge = document.getElementById('modeCard_knowledge');
+      const modeCardManual = document.getElementById('modeCard_manual');
+
+      if (mode === 'knowledge') {
+        knowledgeSection.classList.remove('hidden');
+        manualSection.classList.add('hidden');
+        modeCardKnowledge.classList.remove('border-gray-200');
+        modeCardKnowledge.classList.add('border-primary-500', 'bg-primary-50');
+        modeCardManual.classList.remove('border-primary-500', 'bg-primary-50');
+        modeCardManual.classList.add('border-gray-200');
+      } else {
+        knowledgeSection.classList.add('hidden');
+        manualSection.classList.remove('hidden');
+        modeCardManual.classList.remove('border-gray-200');
+        modeCardManual.classList.add('border-primary-500', 'bg-primary-50');
+        modeCardKnowledge.classList.remove('border-primary-500', 'bg-primary-50');
+        modeCardKnowledge.classList.add('border-gray-200');
+      }
+    }
+
+    function switchDisplayMode(mode) {
+      const orderCard = document.getElementById('displayCard_order');
+      const randomCard = document.getElementById('displayCard_random');
+      if (mode === 'order') {
+        orderCard.classList.remove('border-gray-200');
+        orderCard.classList.add('border-primary-500', 'bg-primary-50');
+        randomCard.classList.remove('border-primary-500', 'bg-primary-50');
+        randomCard.classList.add('border-gray-200');
+      } else {
+        randomCard.classList.remove('border-gray-200');
+        randomCard.classList.add('border-primary-500', 'bg-primary-50');
+        orderCard.classList.remove('border-primary-500', 'bg-primary-50');
+        orderCard.classList.add('border-gray-200');
+      }
+    }
+
+    // ==================== 指定题目模式 ====================
+    function openQuestionPicker() {
+      document.getElementById('questionPickerModal').classList.remove('hidden');
+      pickerCheckedIds = new Set();
+      populatePickerKnowledgeFilter();
+      filterPickerQuestions();
+      updatePickerCounts();
+    }
+
+    function closeQuestionPicker() {
+      document.getElementById('questionPickerModal').classList.add('hidden');
+    }
+
+    function populatePickerKnowledgeFilter() {
+      const select = document.getElementById('pickerKnowledgeFilter');
+      select.innerHTML = '<option value="">全部知识点</option>';
+      function collectLeafNodes(nodes) {
+        nodes.forEach(node => {
+          if (node.type === 'knowledge') {
+            select.innerHTML += `<option value="${node.id}">${node.name}</option>`;
+          }
+          if (node.children) collectLeafNodes(node.children);
+        });
+      }
+      collectLeafNodes(knowledgeTree);
+    }
+
+    function filterPickerQuestions() {
+      const keyword = (document.getElementById('pickerSearchKeyword').value || '').toLowerCase().trim();
+      const typeFilter = document.getElementById('pickerTypeFilter').value;
+      const knowledgeFilter = document.getElementById('pickerKnowledgeFilter').value;
+      const difficultyFilter = document.getElementById('pickerDifficultyFilter').value;
+
+      const difficultyAlias = { '简单': 'easy', '中等': 'medium', '困难': 'hard' };
+
+      pickerFilteredQuestions = allQuestions.filter(q => {
+        if (keyword && !(q.content || q.title || '').toLowerCase().includes(keyword)) return false;
+        if (typeFilter && (q.typeName || q.type) !== typeFilter) return false;
+        if (knowledgeFilter && String(q.knowledgeId) !== knowledgeFilter) return false;
+        if (difficultyFilter) {
+          const qDiff = difficultyAlias[q.difficulty] || q.difficulty;
+          if (qDiff !== difficultyFilter) return false;
+        }
+        return true;
+      });
+
+      pickerCurrentPage = 1;
+      renderPickerPage();
+    }
+
+    function renderPickerPage() {
+      const total = pickerFilteredQuestions.length;
+      const totalPages = Math.max(1, Math.ceil(total / pickerPageSize));
+      if (pickerCurrentPage > totalPages) pickerCurrentPage = totalPages;
+
+      const start = (pickerCurrentPage - 1) * pickerPageSize;
+      const pageItems = pickerFilteredQuestions.slice(start, start + pickerPageSize);
+
+      renderPickerTable(pageItems);
+      renderPickerPagination(total, totalPages);
+      updatePickerCounts();
+    }
+
+    function renderPickerPagination(total, totalPages) {
+      document.getElementById('pickerTotalCount').textContent = total;
+      const container = document.getElementById('pickerPageNumbers');
+
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      html += `<button onclick="pickerGoPage(${pickerCurrentPage - 1})" ${pickerCurrentPage === 1 ? 'disabled' : ''}
+        class="px-2 py-1 text-sm rounded ${pickerCurrentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}">
+        <i class="fas fa-chevron-left"></i></button>`;
+
+      const maxVisible = 7;
+      let pages = [];
+      if (totalPages <= maxVisible) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        let start = Math.max(2, pickerCurrentPage - 2);
+        let end = Math.min(totalPages - 1, pickerCurrentPage + 2);
+        if (start > 2) pages.push('...');
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (end < totalPages - 1) pages.push('...');
+        pages.push(totalPages);
+      }
+
+      pages.forEach(p => {
+        if (p === '...') {
+          html += `<span class="px-2 py-1 text-sm text-gray-400">...</span>`;
+        } else {
+          html += `<button onclick="pickerGoPage(${p})"
+            class="px-3 py-1 text-sm rounded ${p === pickerCurrentPage ? 'bg-primary-500 text-white' : 'text-gray-600 hover:bg-gray-100'}">${p}</button>`;
+        }
+      });
+
+      html += `<button onclick="pickerGoPage(${pickerCurrentPage + 1})" ${pickerCurrentPage === totalPages ? 'disabled' : ''}
+        class="px-2 py-1 text-sm rounded ${pickerCurrentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}">
+        <i class="fas fa-chevron-right"></i></button>`;
+
+      container.innerHTML = html;
+    }
+
+    function pickerGoPage(page) {
+      const totalPages = Math.ceil(pickerFilteredQuestions.length / pickerPageSize);
+      if (page < 1 || page > totalPages) return;
+      pickerCurrentPage = page;
+      renderPickerPage();
+    }
+
+    function renderPickerTable(questions) {
+      const tbody = document.getElementById('pickerQuestionTableBody');
+      const existingIds = new Set(manualSelectedQuestions.map(q => q.id));
+
+      if (questions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-12 text-center text-gray-400">没有符合条件的题目</td></tr>';
+        return;
+      }
+
+      const difficultyMap = { easy: '简单', medium: '中等', hard: '困难', '简单': '简单', '中等': '中等', '困难': '困难' };
+      const difficultyColors = { easy: 'text-success-600 bg-success-50', medium: 'text-warning-600 bg-warning-50', hard: 'text-error-600 bg-error-50', '简单': 'text-success-600 bg-success-50', '中等': 'text-warning-600 bg-warning-50', '困难': 'text-error-600 bg-error-50' };
+      const typeColors = { '单选题': 'text-info-600 bg-info-50', '多选题': 'text-purple-600 bg-purple-50', '判断题': 'text-indigo-600 bg-indigo-50', '填空题': 'text-warning-600 bg-warning-50', '简答题': 'text-amber-600 bg-amber-50' };
+
+      tbody.innerHTML = questions.map(q => {
+        const typeName = q.typeName || q.type;
+        const content = (q.content || q.title || '').replace(/<[^>]+>/g, '').substring(0, 60);
+        const knNode = findNodeById(knowledgeTree, parseInt(q.knowledgeId));
+        const knName = knNode ? knNode.name : '-';
+        const isExisting = existingIds.has(q.id);
+        const isChecked = pickerCheckedIds.has(q.id);
+
+        return `<tr class="hover:bg-gray-50 ${isExisting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'} ${isChecked && !isExisting ? 'bg-primary-50' : ''}"
+          ${isExisting ? '' : `onclick="togglePickerCheck('${q.id}')"`}>
+          <td class="px-4 py-3">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} ${isExisting ? 'disabled' : ''}
+              onclick="event.stopPropagation()"
+              onchange="togglePickerCheck('${q.id}')"
+              class="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500 ${isExisting ? 'cursor-not-allowed' : 'cursor-pointer'}">
+          </td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <span class="inline-block px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap ${typeColors[typeName] || 'text-gray-600 bg-gray-50'}">${typeName}</span>
+          </td>
+          <td class="px-4 py-3 text-gray-700 truncate max-w-xs" title="${content}">${content || '(无内容)'}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">${knName}</td>
+          <td class="px-4 py-3">
+            <span class="px-2 py-0.5 rounded text-xs font-medium ${difficultyColors[q.difficulty] || 'text-gray-500 bg-gray-50'}">${difficultyMap[q.difficulty] || '-'}</span>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function togglePickerCheck(qId) {
+      if (pickerCheckedIds.has(qId)) {
+        pickerCheckedIds.delete(qId);
+      } else {
+        pickerCheckedIds.add(qId);
+      }
+      updatePickerCounts();
+      // 重新渲染当前页以更新行高亮
+      const start = (pickerCurrentPage - 1) * pickerPageSize;
+      const pageItems = pickerFilteredQuestions.slice(start, start + pickerPageSize);
+      renderPickerTable(pageItems);
+      updatePickerSelectAllState();
+    }
+
+    function updatePickerSelectAllState() {
+      const existingIds = new Set(manualSelectedQuestions.map(q => q.id));
+      const start = (pickerCurrentPage - 1) * pickerPageSize;
+      const pageItems = pickerFilteredQuestions.slice(start, start + pickerPageSize);
+      const selectableOnPage = pageItems.filter(q => !existingIds.has(q.id));
+      const checkedOnPage = selectableOnPage.filter(q => pickerCheckedIds.has(q.id));
+      const selectAll = document.getElementById('pickerSelectAll');
+      if (selectableOnPage.length === 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      } else if (checkedOnPage.length === selectableOnPage.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+      } else if (checkedOnPage.length > 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+      } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+      }
+    }
+
+    function togglePickerSelectAll() {
+      const selectAll = document.getElementById('pickerSelectAll');
+      const existingIds = new Set(manualSelectedQuestions.map(q => q.id));
+
+      if (selectAll.checked) {
+        // 表头全选 = 选择本页
+        const start = (pickerCurrentPage - 1) * pickerPageSize;
+        const pageItems = pickerFilteredQuestions.slice(start, start + pickerPageSize);
+        pageItems.forEach(q => {
+          if (!existingIds.has(q.id)) pickerCheckedIds.add(q.id);
+        });
+      } else {
+        // 取消本页
+        const start = (pickerCurrentPage - 1) * pickerPageSize;
+        const pageItems = pickerFilteredQuestions.slice(start, start + pickerPageSize);
+        pageItems.forEach(q => { pickerCheckedIds.delete(q.id); });
+      }
+      renderPickerPage();
+    }
+
+    function pickerSelectAllPages() {
+      const existingIds = new Set(manualSelectedQuestions.map(q => q.id));
+      pickerFilteredQuestions.forEach(q => {
+        if (!existingIds.has(q.id)) pickerCheckedIds.add(q.id);
+      });
+      renderPickerPage();
+    }
+
+    function pickerDeselectAllPages() {
+      pickerFilteredQuestions.forEach(q => {
+        pickerCheckedIds.delete(q.id);
+      });
+      renderPickerPage();
+    }
+
+    function updatePickerCounts() {
+      document.getElementById('pickerCheckedCount').textContent = pickerCheckedIds.size;
+      document.getElementById('pickerExistingCount').textContent = manualSelectedQuestions.length;
+      updatePickerSelectAllState();
+    }
+
+    function resetPickerFilters() {
+      document.getElementById('pickerSearchKeyword').value = '';
+      document.getElementById('pickerTypeFilter').value = '';
+      document.getElementById('pickerKnowledgeFilter').value = '';
+      document.getElementById('pickerDifficultyFilter').value = '';
+      filterPickerQuestions();
+    }
+
+    function confirmQuestionPicker() {
+      if (pickerCheckedIds.size === 0) {
+        showMessage('请至少选择一道题目', 'warning');
+        return;
+      }
+
+      const newQuestions = allQuestions.filter(q => pickerCheckedIds.has(q.id));
+      manualSelectedQuestions = [...manualSelectedQuestions, ...newQuestions];
+      renderManualQuestionList();
+      closeQuestionPicker();
+      showMessage(`成功添加 ${newQuestions.length} 道题目`, 'success');
+    }
+
+    function renderManualQuestionList() {
+      const container = document.getElementById('manualQuestionList');
+      const countEl = document.getElementById('manualSelectedCount');
+
+      countEl.textContent = `已选 ${manualSelectedQuestions.length} 道题目`;
+
+      if (manualSelectedQuestions.length === 0) {
+        container.innerHTML = `
+          <div class="text-sm text-gray-400 py-8 text-center border border-dashed border-gray-300 rounded-lg">
+            <i class="fas fa-hand-pointer text-2xl text-gray-300 mb-2 block"></i>
+            点击"从题库选择"按钮添加题目
+          </div>`;
+        return;
+      }
+
+      // 筛选已选题目
+      const filtered = getManualFilteredList();
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / manualListPageSize));
+      if (manualListPage > totalPages) manualListPage = totalPages;
+
+      const start = (manualListPage - 1) * manualListPageSize;
+      const pageItems = filtered.slice(start, start + manualListPageSize);
+
+      const typeColors = { '单选题': 'text-info-600 bg-info-50', '多选题': 'text-purple-600 bg-purple-50', '判断题': 'text-indigo-600 bg-indigo-50', '填空题': 'text-warning-600 bg-warning-50', '简答题': 'text-amber-600 bg-amber-50' };
+      const difficultyMap = { easy: '简单', medium: '中等', hard: '困难', '简单': '简单', '中等': '中等', '困难': '困难' };
+      const difficultyColors = { easy: 'text-success-600', medium: 'text-warning-600', hard: 'text-error-600', '简单': 'text-success-600', '中等': 'text-warning-600', '困难': 'text-error-600' };
+
+      // 收集知识点选项
+      const knSet = new Set();
+      manualSelectedQuestions.forEach(q => {
+        const node = findNodeById(knowledgeTree, parseInt(q.knowledgeId));
+        if (node) knSet.add(JSON.stringify({ id: node.id, name: node.name }));
+      });
+      const knOptions = [...knSet].map(s => JSON.parse(s));
+
+      // 构建面板HTML
+      let html = `<div class="border border-gray-200 rounded-lg overflow-hidden">`;
+      // 筛选栏
+      html += `<div class="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-200 flex-nowrap">
+        <input type="text" id="manualFilterKeyword" placeholder="搜索题目..." oninput="filterManualList()"
+          class="w-44 px-3 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-primary-500">
+        <select id="manualFilterType" onchange="filterManualList()"
+          class="px-3 py-1.5 border border-gray-300 rounded text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary-500">
+          <option value="">全部题型</option>
+          <option value="单选题">单选题</option><option value="多选题">多选题</option>
+          <option value="判断题">判断题</option><option value="填空题">填空题</option>
+          <option value="简答题">简答题</option>
+        </select>
+        <select id="manualFilterKnowledge" onchange="filterManualList()"
+          class="px-3 py-1.5 border border-gray-300 rounded text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary-500">
+          <option value="">全部知识点</option>
+          ${knOptions.map(k => `<option value="${k.id}">${k.name}</option>`).join('')}
+        </select>
+        <select id="manualFilterDifficulty" onchange="filterManualList()"
+          class="px-3 py-1.5 border border-gray-300 rounded text-sm bg-white focus:outline-none focus:ring-1 focus:ring-primary-500">
+          <option value="">全部难度</option>
+          <option value="easy">简单</option><option value="medium">中等</option><option value="hard">困难</option>
+        </select>
+        <div class="ml-auto flex items-center space-x-2">
+          <button type="button" onclick="removeManualCurrentPage()"
+            class="px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-white hover:bg-gray-100 border border-gray-300 rounded transition-colors">
+            移除本页
+          </button>
+          <button type="button" onclick="clearManualQuestions()"
+            class="px-2.5 py-1.5 text-xs font-medium text-error-600 bg-white hover:bg-error-50 border border-error-200 rounded transition-colors">
+            清除全部
+          </button>
+        </div>
+      </div>`;
+      // 表格
+      html += `<div>
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 sticky top-0 border-b border-gray-200">
+            <tr class="text-left text-gray-600 whitespace-nowrap">
+              <th class="px-4 py-2.5 w-12">#</th>
+              <th class="px-4 py-2.5 w-20">题型</th>
+              <th class="px-4 py-2.5">题目内容</th>
+              <th class="px-4 py-2.5 w-24">知识点</th>
+              <th class="px-4 py-2.5 w-16">难度</th>
+              <th class="px-4 py-2.5 w-16">操作</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">`;
+
+      if (pageItems.length === 0) {
+        html += `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">无匹配题目</td></tr>`;
+      } else {
+        pageItems.forEach((q, idx) => {
+          const globalIdx = manualSelectedQuestions.indexOf(q);
+          const typeName = q.typeName || q.type;
+          const content = (q.content || q.title || '').replace(/<[^>]+>/g, '').substring(0, 60);
+          const knNode = findNodeById(knowledgeTree, parseInt(q.knowledgeId));
+          const knName = knNode ? knNode.name : '-';
+          html += `<tr class="hover:bg-gray-50">
+            <td class="px-4 py-2.5 text-gray-400 text-xs">${start + idx + 1}</td>
+            <td class="px-4 py-2.5 whitespace-nowrap"><span class="px-2 py-0.5 rounded text-xs font-medium ${typeColors[typeName] || 'text-gray-600 bg-gray-50'}">${typeName}</span></td>
+            <td class="px-4 py-2.5 text-gray-700 truncate max-w-[280px]" title="${content}">${content || '(无内容)'}</td>
+            <td class="px-4 py-2.5 text-gray-500 text-xs">${knName}</td>
+            <td class="px-4 py-2.5"><span class="text-xs ${difficultyColors[q.difficulty] || 'text-gray-400'}">${difficultyMap[q.difficulty] || '-'}</span></td>
+            <td class="px-4 py-2.5">
+              <button type="button" onclick="removeManualQuestion(${globalIdx})"
+                class="text-gray-400 hover:text-error-500 transition-colors" title="移除">
+                <i class="fas fa-times"></i>
+              </button>
+            </td>
+          </tr>`;
+        });
+      }
+
+      html += `</tbody></table></div>`;
+      // 底部分页
+      html += `<div class="flex items-center justify-between px-4 py-2.5 border-t border-gray-200 bg-gray-50">
+        <span class="text-xs text-gray-500">共 ${manualSelectedQuestions.length} 题${filtered.length !== manualSelectedQuestions.length ? '，筛选显示 ' + filtered.length + ' 题' : ''}</span>
+        <div class="flex items-center space-x-1" id="manualPageNumbers">`;
+
+      if (totalPages > 1) {
+        html += `<button type="button" onclick="manualListGoPage(${manualListPage - 1})" ${manualListPage === 1 ? 'disabled' : ''}
+          class="px-2 py-1 text-xs rounded ${manualListPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}">
+          <i class="fas fa-chevron-left"></i></button>`;
+        const maxV = 7;
+        let pages = [];
+        if (totalPages <= maxV) {
+          for (let i = 1; i <= totalPages; i++) pages.push(i);
+        } else {
+          pages.push(1);
+          let s = Math.max(2, manualListPage - 2), e = Math.min(totalPages - 1, manualListPage + 2);
+          if (s > 2) pages.push('...');
+          for (let i = s; i <= e; i++) pages.push(i);
+          if (e < totalPages - 1) pages.push('...');
+          pages.push(totalPages);
+        }
+        pages.forEach(p => {
+          if (p === '...') {
+            html += `<span class="px-2 py-1 text-xs text-gray-400">...</span>`;
+          } else {
+            html += `<button type="button" onclick="manualListGoPage(${p})"
+              class="px-2.5 py-1 text-xs rounded ${p === manualListPage ? 'bg-primary-500 text-white' : 'text-gray-600 hover:bg-gray-100'}">${p}</button>`;
+          }
+        });
+        html += `<button type="button" onclick="manualListGoPage(${manualListPage + 1})" ${manualListPage === totalPages ? 'disabled' : ''}
+          class="px-2 py-1 text-xs rounded ${manualListPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-600 hover:bg-gray-100'}">
+          <i class="fas fa-chevron-right"></i></button>`;
+      }
+
+      html += `</div></div>`;
+      html += `</div>`;
+
+      container.innerHTML = html;
+    }
+
+    function getManualFilteredList() {
+      const keyword = (document.getElementById('manualFilterKeyword')?.value || '').toLowerCase().trim();
+      const typeFilter = document.getElementById('manualFilterType')?.value || '';
+      const knFilter = document.getElementById('manualFilterKnowledge')?.value || '';
+      const diffFilter = document.getElementById('manualFilterDifficulty')?.value || '';
+      const diffAlias = { '简单': 'easy', '中等': 'medium', '困难': 'hard' };
+
+      return manualSelectedQuestions.filter(q => {
+        if (keyword && !(q.content || q.title || '').toLowerCase().includes(keyword)) return false;
+        if (typeFilter && (q.typeName || q.type) !== typeFilter) return false;
+        if (knFilter && String(q.knowledgeId) !== knFilter) return false;
+        if (diffFilter) {
+          const qDiff = diffAlias[q.difficulty] || q.difficulty;
+          if (qDiff !== diffFilter) return false;
+        }
+        return true;
+      });
+    }
+
+    function filterManualList() {
+      manualListPage = 1;
+      renderManualQuestionList();
+    }
+
+    function manualListGoPage(page) {
+      const filtered = getManualFilteredList();
+      const totalPages = Math.ceil(filtered.length / manualListPageSize);
+      if (page < 1 || page > totalPages) return;
+      manualListPage = page;
+      renderManualQuestionList();
+    }
+
+    function removeManualCurrentPage() {
+      const filtered = getManualFilteredList();
+      const start = (manualListPage - 1) * manualListPageSize;
+      const pageItems = filtered.slice(start, start + manualListPageSize);
+      const removeIds = new Set(pageItems.map(q => q.id));
+      manualSelectedQuestions = manualSelectedQuestions.filter(q => !removeIds.has(q.id));
+      renderManualQuestionList();
+    }
+
+    function removeManualQuestion(idx) {
+      manualSelectedQuestions.splice(idx, 1);
+      renderManualQuestionList();
+    }
+
+    function clearManualQuestions() {
+      if (manualSelectedQuestions.length === 0) return;
+      if (confirm('确定清空所有已选题目吗？')) {
+        manualSelectedQuestions = [];
+        renderManualQuestionList();
+      }
+    }
 
     // 初始化
     function init() {
@@ -1192,32 +1877,45 @@
     document.getElementById('practiceForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
-      // 获取叶子节点
-      const leafNodeIds = selectedKnowledgeIds
-        .map(id => findNodeById(knowledgeTree, id))
-        .filter(node => node && node.type === 'knowledge')
-        .map(node => node.id);
+      let questionIds = [];
+      let leafNodeIds = [];
+      let assembleMode = currentAssembleMode;
+      let questionMode = 'fixed';
 
-      // 验证：如果没有选择知识点或题型，给出提示
-      if (leafNodeIds.length === 0) {
-        showMessage('请选择知识点', 'warning');
-        return;
+      if (assembleMode === 'knowledge') {
+        // 模式A：按知识点抽题
+        leafNodeIds = selectedKnowledgeIds
+          .map(id => findNodeById(knowledgeTree, id))
+          .filter(node => node && node.type === 'knowledge')
+          .map(node => node.id);
+
+        if (leafNodeIds.length === 0) {
+          showMessage('请选择知识点', 'warning');
+          return;
+        }
+        if (Object.keys(selectedQuestions).length === 0) {
+          showMessage('请至少选择一种题型并设置抽取数量', 'warning');
+          return;
+        }
+
+        Object.entries(selectedQuestions).forEach(([typeName, data]) => {
+          const { count, questions } = data;
+          const shuffled = [...questions].sort(() => Math.random() - 0.5);
+          const selected = shuffled.slice(0, count);
+          selected.forEach(q => questionIds.push(q.id));
+        });
+
+        questionMode = document.querySelector('input[name="questionMode"]:checked').value;
+      } else {
+        // 模式B：指定题目
+        if (manualSelectedQuestions.length === 0) {
+          showMessage('请至少选择一道题目', 'warning');
+          return;
+        }
+        questionIds = manualSelectedQuestions.map(q => q.id);
+        questionMode = 'fixed';
+        var displayMode = document.querySelector('input[name="displayMode"]:checked').value;
       }
-
-      if (Object.keys(selectedQuestions).length === 0) {
-        showMessage('请至少选择一种题型并设置抽取数量', 'warning');
-        return;
-      }
-
-      // 根据选择的数量从每个题型中抽取题目
-      const questionIds = [];
-      Object.entries(selectedQuestions).forEach(([typeName, data]) => {
-        const { count, questions } = data;
-        // 从题目数组中随机抽取指定数量
-        const shuffled = [...questions].sort(() => Math.random() - 0.5);
-        const selected = shuffled.slice(0, count);
-        selected.forEach(q => questionIds.push(q.id));
-      });
 
       let practices = [];
       try {
@@ -1227,44 +1925,41 @@
         practices = [];
       }
 
+      const baseData = {
+        code: document.getElementById('practiceCode').value,
+        name: document.getElementById('practiceName').value,
+        startTime: document.getElementById('startTime').value.replace('T', ' '),
+        endTime: document.getElementById('endTime').value ? document.getElementById('endTime').value.replace('T', ' ') : null,
+        remark: document.getElementById('remarkEditor').innerHTML.trim(),
+        assembleMode: assembleMode,
+        knowledgeIds: leafNodeIds,
+        questionIds: questionIds,
+        questionCount: questionIds.length,
+        questionTypes: assembleMode === 'knowledge' ? Object.keys(selectedQuestions) : [...new Set(manualSelectedQuestions.map(q => q.typeName || q.type))],
+        questionTypeConfig: assembleMode === 'knowledge' ? Object.entries(selectedQuestions).map(([typeName, data]) => ({
+          typeName, count: data.count, maxCount: data.maxCount
+        })) : [],
+        answerDisplay: 'immediate',
+        questionMode: questionMode,
+        displayMode: assembleMode === 'manual' ? (displayMode || 'order') : 'order',
+      };
+
       if (editMode) {
-        // 编辑模式：更新现有记录
         const index = practices.findIndex(p => p.id === editingPracticeId);
         if (index === -1) {
           showMessage('未找到要编辑的刷题任务', 'error');
           return;
         }
-
         const existingPractice = practices[index];
-
-        const formData = {
-          id: existingPractice.id,  // 保持原有ID
-          code: document.getElementById('practiceCode').value,
-          name: document.getElementById('practiceName').value,
-          startTime: document.getElementById('startTime').value.replace('T', ' '),
-          endTime: document.getElementById('endTime').value ? document.getElementById('endTime').value.replace('T', ' ') : null,
-          remark: document.getElementById('remarkEditor').innerHTML.trim(),
-          knowledgeIds: leafNodeIds,
-          questionIds: questionIds,
-          questionCount: questionIds.length,
-          questionTypes: Object.keys(selectedQuestions),
-          questionTypeConfig: Object.entries(selectedQuestions).map(([typeName, data]) => ({
-            typeName: typeName,
-            count: data.count,
-            maxCount: data.maxCount
-          })),
-          answerDisplay: 'immediate',
-          questionMode: document.querySelector('input[name="questionMode"]:checked').value,  // 抽题方式
-          totalParticipants: existingPractice.totalParticipants || 0,  // 保持原有数据
-          completedParticipants: existingPractice.completedParticipants || 0,  // 保持原有数据
-          createTime: existingPractice.createTime,  // 保持原有创建时间
-          status: existingPractice.status || 'pending'  // 保持原有状态
+        practices[index] = {
+          ...baseData,
+          id: existingPractice.id,
+          totalParticipants: existingPractice.totalParticipants || 0,
+          completedParticipants: existingPractice.completedParticipants || 0,
+          createTime: existingPractice.createTime,
+          status: existingPractice.status || 'pending'
         };
 
-        practices[index] = formData;
-        console.log('更新刷题任务:', formData);
-
-        // 按创建时间倒序排列（最新的在前）
         practices.sort((a, b) => {
           const timeA = new Date(a.createTime.replace(' ', 'T')).getTime();
           const timeB = new Date(b.createTime.replace(' ', 'T')).getTime();
@@ -1273,78 +1968,28 @@
 
         localStorage.setItem('practices', JSON.stringify(practices));
         showMessage('刷题任务修改成功！', 'success');
-
-        setTimeout(() => {
-          window.location.href = 'list.html';
-        }, 1000);
+        setTimeout(() => { window.location.href = 'list.html'; }, 1000);
 
       } else {
-        // 创建模式：添加新记录
         const formData = {
-          id: 'PR' + Date.now(),  // 生成唯一ID
-          code: document.getElementById('practiceCode').value,
-          name: document.getElementById('practiceName').value,
-          startTime: document.getElementById('startTime').value.replace('T', ' '),
-          endTime: document.getElementById('endTime').value ? document.getElementById('endTime').value.replace('T', ' ') : null,
-          remark: document.getElementById('remarkEditor').innerHTML.trim(),
-          knowledgeIds: leafNodeIds,
-          questionIds: questionIds,
-          questionCount: questionIds.length,
-          questionTypes: Object.keys(selectedQuestions),
-          questionTypeConfig: Object.entries(selectedQuestions).map(([typeName, data]) => ({
-            typeName: typeName,
-            count: data.count,
-            maxCount: data.maxCount
-          })),
-          answerDisplay: 'immediate',
-          questionMode: document.querySelector('input[name="questionMode"]:checked').value,  // 抽题方式
+          ...baseData,
+          id: 'PR' + Date.now(),
           totalParticipants: 0,
           completedParticipants: 0,
-          createTime: formatDateTime(new Date()),  // 使用统一格式
+          createTime: formatDateTime(new Date()),
           status: 'pending'
         };
 
-        console.log('==================== 创建刷题任务 ====================');
-        console.log('新任务信息:', formData);
-        console.log('新任务ID:', formData.id);
-        console.log('新任务创建时间:', formData.createTime);
-        console.log('新任务时间戳:', new Date(formData.createTime.replace(' ', 'T')).getTime());
-
         practices.push(formData);
-
-        console.log('添加后总数:', practices.length);
-        console.log('排序前前3个:');
-        practices.slice(0, 3).forEach((p, i) => {
-          const timestamp = new Date(p.createTime.replace(' ', 'T')).getTime();
-          console.log(`  ${i+1}. ${p.name} - ${p.createTime} (${timestamp})`);
-        });
-
-        // 按创建时间倒序排列（最新的在前）
         practices.sort((a, b) => {
           const timeA = new Date(a.createTime.replace(' ', 'T')).getTime();
           const timeB = new Date(b.createTime.replace(' ', 'T')).getTime();
-          console.log(`排序比较: ${a.name}(${timeA}) vs ${b.name}(${timeB}) = ${timeB - timeA}`);
           return timeB - timeA;
         });
 
-        console.log('排序后前3个:');
-        practices.slice(0, 3).forEach((p, i) => {
-          const timestamp = new Date(p.createTime.replace(' ', 'T')).getTime();
-          console.log(`  ${i+1}. ${p.name} - ${p.createTime} (${timestamp})`);
-        });
-
         localStorage.setItem('practices', JSON.stringify(practices));
-
-        console.log('✅ 保存成功！');
-        console.log('第一个任务:', practices[0].name, '-', practices[0].createTime);
-        console.log('新任务是否排在第一:', practices[0].id === formData.id);
-        console.log('====================================================');
-
         showMessage('刷题任务创建成功！', 'success');
-
-        setTimeout(() => {
-          window.location.href = 'list.html';
-        }, 1000);
+        setTimeout(() => { window.location.href = 'list.html'; }, 1000);
       }
     });
 

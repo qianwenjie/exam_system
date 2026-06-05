@@ -453,6 +453,31 @@
                 </div>
               </div>
 
+              <!-- 试卷展示方式（仅固定抽题时显示） -->
+              <div id="paperDisplayModeContainer" class="bg-white border-x border-gray-200 px-6 py-4" style="display: none;">
+                <label class="block text-sm font-medium text-gray-700 mb-3">
+                  <span class="text-error-500">*</span> 试卷展示方式
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                  <label id="displayModeCard_fixed" class="flex items-start p-4 border-2 border-primary-500 bg-primary-50 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    <input type="radio" name="paperDisplayMode" value="fixed" checked onchange="switchPaperDisplayMode('fixed')"
+                      class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                    <div class="ml-3 flex-1">
+                      <div class="text-sm font-medium text-gray-900">固定顺序</div>
+                      <div class="mt-1 text-xs text-gray-500">试卷原样展示，所有考生看到相同的题目和选项顺序</div>
+                    </div>
+                  </label>
+                  <label id="displayModeCard_shuffle" class="flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-primary-500 hover:bg-primary-50 transition-all">
+                    <input type="radio" name="paperDisplayMode" value="shuffle" onchange="switchPaperDisplayMode('shuffle')"
+                      class="mt-0.5 w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500">
+                    <div class="ml-3 flex-1">
+                      <div class="text-sm font-medium text-gray-900">随机打乱</div>
+                      <div class="mt-1 text-xs text-gray-500">题目顺序和选项顺序都随机打乱，每位考生看到的顺序不同</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <!-- 固定底部：分页 -->
               <div class="bg-white border border-gray-200 rounded-b-lg py-3 px-6">
                 <div class="flex items-center justify-between">
@@ -686,6 +711,10 @@
                       <button onclick="previewSelectedPaper()" id="previewPaperBtn" class="ml-4 px-3 py-1.5 text-primary-600 hover:text-primary-700 border border-primary-500 hover:bg-primary-50 rounded text-xs transition-colors">
                         <i class="fas fa-eye mr-1"></i>预览试卷
                       </button>
+                    </div>
+                    <div class="flex items-center" id="confirmDisplayModeRow" style="display:none;">
+                      <span class="w-28 text-gray-500">展示方式：</span>
+                      <span class="flex-1 text-gray-900" id="confirmPaperDisplayMode">-</span>
                     </div>
                   </div>
                 </div>
@@ -2432,6 +2461,39 @@
       }).join('');
 
       list.innerHTML = html;
+      updatePaperDisplayModeVisibility();
+    }
+
+    // 控制试卷展示方式的显示/隐藏
+    function updatePaperDisplayModeVisibility() {
+      const container = document.getElementById('paperDisplayModeContainer');
+      if (selectedPaperIds.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      const paper = allPapers.find(p => p.id === selectedPaperIds[0]);
+      if (paper && paper.mode === 'extraction' && paper.extractionType === 'fixed') {
+        container.style.display = 'block';
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    // 切换试卷展示方式卡片样式
+    function switchPaperDisplayMode(mode) {
+      const fixedCard = document.getElementById('displayModeCard_fixed');
+      const shuffleCard = document.getElementById('displayModeCard_shuffle');
+      if (mode === 'fixed') {
+        fixedCard.classList.remove('border-gray-200');
+        fixedCard.classList.add('border-primary-500', 'bg-primary-50');
+        shuffleCard.classList.remove('border-primary-500', 'bg-primary-50');
+        shuffleCard.classList.add('border-gray-200');
+      } else {
+        shuffleCard.classList.remove('border-gray-200');
+        shuffleCard.classList.add('border-primary-500', 'bg-primary-50');
+        fixedCard.classList.remove('border-primary-500', 'bg-primary-50');
+        fixedCard.classList.add('border-gray-200');
+      }
     }
 
     // 移除单个已选试卷
@@ -2592,6 +2654,17 @@
       } else {
         document.getElementById('confirmPaperCode').textContent = '未选择';
         document.getElementById('confirmPaperName').textContent = '-';
+      }
+
+      // 试卷展示方式
+      const displayModeRow = document.getElementById('confirmDisplayModeRow');
+      const displayModeContainer = document.getElementById('paperDisplayModeContainer');
+      if (displayModeContainer.style.display !== 'none') {
+        const mode = document.querySelector('input[name="paperDisplayMode"]:checked')?.value;
+        displayModeRow.style.display = 'flex';
+        document.getElementById('confirmPaperDisplayMode').textContent = mode === 'shuffle' ? '随机打乱' : '固定顺序';
+      } else {
+        displayModeRow.style.display = 'none';
       }
 
       // 考试配置 - 迟到设置

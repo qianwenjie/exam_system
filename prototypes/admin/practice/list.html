@@ -618,7 +618,7 @@
           questionTypes: questionTypes,
           questionTypeConfig: questionTypeConfig,
           answerDisplay: 'immediate',
-          questionMode: Math.random() > 0.5 ? 'fixed' : 'random',  // 随机分配抽题方式
+          assembleMode: Math.random() > 0.5 ? 'knowledge' : 'manual',  // 随机分配组题方式
           totalParticipants: totalParticipants,
           completedParticipants: completedParticipants,
           passRate: targetStatus === 'not_started' ? 0 : Math.floor(Math.random() * 30) + 60,
@@ -737,7 +737,7 @@
       if (!practice.totalParticipants) practice.totalParticipants = 0;
       if (!practice.completedParticipants) practice.completedParticipants = 0;
       if (!practice.id) practice.id = 'PR' + Date.now() + Math.random();
-      if (!practice.questionMode) practice.questionMode = 'fixed';  // 默认固定抽题
+      if (!practice.assembleMode) practice.assembleMode = 'knowledge';  // 默认知识点抽题
 
       const statusConfig = {
         ongoing: {
@@ -782,9 +782,9 @@
                 <h3 class="text-lg font-semibold text-gray-900">${practice.name}</h3>
               </div>
               <div class="flex items-center space-x-6 text-sm text-gray-400">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${practice.questionMode === 'fixed' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'}">
-                  <i class="fas fa-${practice.questionMode === 'fixed' ? 'lock' : 'random'} mr-1"></i>
-                  ${practice.questionMode === 'fixed' ? '固定抽题' : '随机抽题'}
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${practice.assembleMode === 'manual' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'}">
+                  <i class="fas fa-${practice.assembleMode === 'manual' ? 'list-check' : 'shuffle'} mr-1"></i>
+                  ${practice.assembleMode === 'manual' ? '固定题目' : '随机抽题'}
                 </span>
                 <span># ${practice.code}</span>
                 <span>任务时间: ${practice.startTime} ~ ${practice.endTime || '不限'}</span>
